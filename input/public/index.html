@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<title>Document</title>
+	<style>
+	
+		.output {
+			font-family: Helvetica;
+			font-size: 25em;
+			font-weight: bold;
+		}
+
+	</style>
+</head>
+<body>
+	<div class="output"></div>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.7/socket.io.min.js"></script>
+	<script>
+		var socket = io.connect('http://'+location.hostname+':9000')
+		var outputEl = document.querySelector('.output')
+
+		socket.on('output', function(data) {
+			outputEl.innerHTML = data.message
+		})
+	</script>
+</body>
+</html>

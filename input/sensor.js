@@ -3,6 +3,21 @@
 /* ------------------------------------ */
 var Gpio       = require('onoff').Gpio
 var _          = require('lodash')
+var io         = require('socket.io')()
+var express    = require('express')
+
+/* ------------------------------------ */
+/* Web Server */
+/* ------------------------------------ */
+var app = express()
+
+app.use(express.static('./public'))
+app.listen(8000)
+io.listen(9000)
+
+io.on('connection', function(socket) {
+	console.log('client connected', socket.id)
+})
 
 /* ------------------------------------ */
 /* Variables */
@@ -36,18 +51,36 @@ function check(err, state) {
 	
 	// console.log(d)
 	
-	if(between(d, 120, 130)) {
+	if(between(d, 115, 130)) {
 		console.log('dark', d)
-	} else if(between(d, 110, 120)) {
-		console.log('normal', d)
-	} else if(between(d, 100, 110)){
+		io.emit('output', {
+			message: 'dark'
+		})
+	// } else if(between(d, 115, 120)) {
+	// 	console.log('shade', d)
+	// 	io.emit('output', {
+	// 		message: 'shade'
+	// 	})
+	} else if(between(d, 100, 115)){
 		console.log('bright', d)
+		io.emit('output', {
+			message: 'bright'
+		})
 	} else if(d >= 130) {
 		console.log('high-spike', d)
+		// io.emit('output', {
+		// 	message: 'high-spike'
+		// })
 	} else if(d <= 100) {
 		console.log('low-spike', d)
-	}else {
+		// io.emit('output', {
+		// 	message: 'low-spike'
+		// })
+	} else {
 		console.log('spooky', d)
+		// io.emit('output', {
+		// 	message: 'spooky'
+		// })
 	}
 }
 // ldr.watch(check)
